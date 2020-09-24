@@ -1,0 +1,12 @@
+---
+title: "Data Science 1, Homework 2"
+author: "Emil Hafeez (eh2928)"
+date: "9/24/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(readxl)
+```
+
