@@ -2,11 +2,24 @@
 title: "Data Science 1, Homework 2"
 author: "Emil Hafeez (eh2928)"
 date: "9/24/2020"
-output: html_document
+output: github_document
 ---
-
+## Read in the libraries
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(readxl)
 ```
 
+# Problem One
+
+#ReaD in the Mr Trashwheel data
+```{r}
+trashwheel_df = 
+    read_xlsx(
+      "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx"
+      
+      
+      
+      )
+
+```
