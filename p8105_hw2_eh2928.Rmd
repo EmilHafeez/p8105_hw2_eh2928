@@ -75,3 +75,21 @@ These data relate information on the date, type, volume, and counts of various t
 
 Mr. Trash Wheel, amazingly, prevented `r trashwheel_df %>% filter(year == 2017) %>% pull(weight_tons) %>% sum()` tons of trash from entering the Baltimore Inner Harbor in 2017 and `r trashwheel_df %>% filter(year == 2018) %>% pull(weight_tons) %>% sum()` tons in 2018. The median number of sports balls in a 2017 dumpster was `r trashwheel_df %>% filter(year == 2017) %>% pull(sports_balls) %>% median()`.
 
+# Problem Two
+Here, we focus on NYC Transit data relating to entrances and exits for each subway station in NYC. 
+
+Read and clean the data; retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Convert the entry variable from character (YES vs NO) to a logical variable.
+```{r NYC Transit cleanings, warning = FALSE, message = FALSE, results = FALSE}
+transit_df =
+  read_csv(
+      "./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>% 
+  janitor::clean_names() %>% 
+  select(line:vending, ada, -exit_only) %>% 
+  mutate(entry = recode(entry, "YES" = "1" "NO" = "0"))
+
+```
+
+
+Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or recode function may be useful).
+
+
