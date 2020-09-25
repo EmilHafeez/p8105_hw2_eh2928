@@ -12,14 +12,53 @@ library(readxl)
 
 # Problem One
 
-#ReaD in the Mr Trashwheel data
-```{r}
+#Read in the Mr Trash Wheel data, and process it.
+Here, we assign the data in the Mr. Trashwheel sheet of an Excel sheet to a variable. We specify the data in the sheet, as well as clean the variable names, drop the rows without dumpster-specific data (which appear to be subtotals in the original sheet), and then round a variable to the nearest integer and store that variable respectively as an integer. That's it! In 10 lines! 
+```{r trashwheel df and cleaning}
 trashwheel_df = 
     read_xlsx(
-      "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx"
-      
-      
-      
+      path =  "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx",
+      sheet = "Mr. Trash Wheel",
+      range = cell_cols("A:N")) %>% 
+    janitor::clean_names() %>% 
+    drop_na(dumpster) %>% 
+	mutate(
+		sports_balls = round(sports_balls),
+		sports_balls = as.integer(sports_balls)
       )
-
 ```
+#Implement a similar process for the 2017 and 2018 precipitation data sheets from the same file. 
+We implement a similar cleaning process as above, though instead for two years of precipitation data. We also omit rows without precipitation data, and also add a variable for the year. We also combine the 2018 and 2018 datasets, and convert the month into a character variable.
+```{r precipitation_2017}
+precipitation_2017_df = 
+    read_xlsx(
+      path =  "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx",
+      sheet = "2017 Precipitation", 
+		  skip = 1) %>% 
+    janitor::clean_names() %>% 
+    drop_na(month) %>% 
+	mutate(year = 2017) %>% 
+  relocate(year, before = month)
+```
+
+```{r precipitation_2018}
+precipitation_2018_df = 
+    read_xlsx(
+      path =  "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx",
+      sheet = "2018 Precipitation", 
+		  skip = 1) %>% 
+    janitor::clean_names() %>% 
+    drop_na(month) %>% 
+	mutate(year = 2018) %>% 
+  relocate(year, before = month)
+```
+
+
+
+
+
+
+
+
+
+
