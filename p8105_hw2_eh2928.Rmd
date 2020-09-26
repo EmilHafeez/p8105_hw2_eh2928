@@ -85,11 +85,10 @@ transit_df =
       "./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>% 
   janitor::clean_names() %>% 
   select(line:vending, ada, -exit_only) %>% 
-  mutate(entry = recode(entry, "YES" = "1" "NO" = "0"))
-
+  mutate(entry = recode(entry, YES = TRUE, NO = FALSE)) %>% 
+  mutate(vending = recode(vending, YES = TRUE, NO = FALSE)) 
 ```
+These data relate information on NYC subway lines, routes, and station characteristics. It has `r nrow(transit_df)` rows, and `r ncol(transit_df)` columns; they are a subset of the raw data. We've selected this subset of the raw data, as well as cleaned the variable names, and converted two variables to a logical variable (I took the liberty with "entry").
 
-
-Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or recode function may be useful).
-
+Note that there are `r nrow(distinct(transit_df, line, station_name))` distinct stations (by line and station_name combination). Only `r of the `r nrow(distinct(transit_df, line, station_name))` distinct stations are ADA compliant. 
 
