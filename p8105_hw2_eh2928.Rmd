@@ -102,7 +102,7 @@ transit_tidy_df =
     ) %>% 
   mutate(routes_number_served = str_remove_all(routes_number_served, "route"))
 ```
-There are `r filter(transit_tidy_df, str_detect(routes_name_served, "A")) %>% distinct(line, station_name) %>% count()` stations that are distinct by their line and station name which serve the A train. Of these, only `r filter(ada == TRUE) %>% distinct(line, station_name) %>% count()` are ADA compliant.
+There are `r filter(transit_tidy_df, str_detect(routes_name_served, "A")) %>% distinct(line, station_name) %>% count()` stations that are distinct by their line and station name which serve the A train. Of these, only `r filter(transit_tidy_df, ada == TRUE) %>% distinct(line, station_name) %>% count()` are ADA compliant.
 
 # Problem Three
 First, clean the data in the pols-month CSV. Use separate() to break up the variable mon into integer variables year, month, and day; replace month number with month name.
@@ -120,18 +120,10 @@ pols_month_df =
 ```
 Create a president variable taking values gop and dem, and remove prez_dem and prez_gop; and remove the day variable.
 ```{r}
-
+pols_month_df %>% 
+  mutate(prez_dem = recode(prez_dem, "dem" = "1", "gop" = "0"))
+select(-month, prez_dem, prez_gop)
 ```
-
-  
-  
-  
-  select(line:vending, ada, -exit_only) %>% 
-  mutate(entry = recode(entry, YES = TRUE, NO = FALSE)) %>% 
-  mutate(vending = recode(vending, YES = TRUE, NO = FALSE)) 
-
-
-
 
 
 
