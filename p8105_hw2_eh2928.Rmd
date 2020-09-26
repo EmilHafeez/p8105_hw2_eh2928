@@ -12,7 +12,7 @@ library(readxl)
 
 # Problem One
 
-#Read in the Mr Trash Wheel data, and process it.
+# Read in the Mr Trash Wheel data, and process it.
 Here, we read in the data from the Mr. Trashwheel sheet of an Excel document, to create a dataframe. Mr. Trash Wheel is great! I met him when I lived in Baltimore in 2016 to 2018. I follow him on Instagram. 
 
 We specify the data in the sheet, as well as clean the variable names, drop the rows without dumpster-specific data (which appear to be subtotals in the original sheet), and then round a variable to the nearest integer and store that variable respectively as an integer. That's it! In 10 lines! 
@@ -72,7 +72,6 @@ precipitation_combined_df =
 ```
 These data relate information on the date, type, volume, and counts of various trash collected by Baltimore's beloved Mr. Trash Wheel. Additional data sheets include monthly precipitation data, and other Trash Wheel's data (the latter of which  we do not utilize). Note that in the Mr. Trash Wheel dataframe, there are `r nrow(trashwheel_df)` rows, and `r ncol(trashwheel_df)` columns. Meanwhile,  the precipitation dataset representing the combination of 2017 and 2018 data has `r nrow(precipitation_combined_df)` rows and `r ncol(precipitation_combined_df)` columns. There was `r precipitation_combined_df %>% filter(year == 2018) %>%  pull(total) %>% sum()` inches of precipitation in 2018! 
 
-
 Mr. Trash Wheel, amazingly, prevented `r trashwheel_df %>% filter(year == 2017) %>% pull(weight_tons) %>% sum()` tons of trash from entering the Baltimore Inner Harbor in 2017 and `r trashwheel_df %>% filter(year == 2018) %>% pull(weight_tons) %>% sum()` tons in 2018. The median number of sports balls in a 2017 dumpster was `r trashwheel_df %>% filter(year == 2017) %>% pull(sports_balls) %>% median()`.
 
 # Problem Two
@@ -88,25 +87,27 @@ transit_df =
   mutate(entry = recode(entry, YES = TRUE, NO = FALSE)) %>% 
   mutate(vending = recode(vending, YES = TRUE, NO = FALSE)) 
 ```
-```{r how many stations ada compliant}
-filter(transit_df, ada == TRUE) %>% 
-  distinct(line, station_name) %>% 
-    count()
-```
-```{r what proportion of station entrances/exits without vending allow entrance}
-filter(transit_df, vending == FALSE) %>% 
-    filter(entry == TRUE) %>% 
-      count()
-```
 These data relate information on the NYC subway; it includes variables for lines, routes, and station characteristics (including ADA accessibility and location). It has `r nrow(transit_df)` rows, and `r ncol(transit_df)` columns; the cleaned data are a subset of the raw data. We've selected the subset of raw data relevant to our task, as well as cleaned the variable names, and converted two variables to a logical variable (I took the liberty with "entry"). However, these data are not tidy: the data could be represented more tidily by condensing all of the route variables into one, which would also make it feasible to represent distinct line and station name combinations with fewer rows.
 
-Note that there are `r distinct(transit_df, line, station_name) %>% count()` distinct stations (by line and station_name combination). Only `r filter(transit_df, ada == TRUE) %>% distinct(line, station_name) %>% count()` of the `r distinct(transit_df, line, station_name) %>% nrow()` distinct stations are ADA compliant. Something that may also bother you is that only `r filter(transit_df, vending == FALSE) %>% filter(entry == TRUE) %>% count()`subway entrances without vending allow entry.
+Note that there are `r distinct(transit_df, line, station_name) %>% count()` distinct stations (by line and station_name combination). Only `r filter(transit_df, ada == TRUE) %>% distinct(line, station_name) %>% count()` of the `r distinct(transit_df, line, station_name) %>% nrow()` distinct stations are ADA compliant. Something that may also bother you is that only `r filter(transit_df, vending == FALSE) %>% filter(entry == TRUE) %>% count()` subway entrances without vending allow entry.
 
-Now, reformat data so that route number and route name are distinct variables. How many distinct stations serve the A train? Of the stations that serve the A train, how many are ADA compliant?
-
+Now, reformat data so that route number and route name are distinct variables. 
 ```{r reformat and then calculate some specifics}
-
+transit_tidy_df =
+  transit_df %>% 
+  mutate(route8 = (as.character(route8))) %>% 
+  mutate(route9 = (as.character(route8))) %>% 
+  mutate(route10 = (as.character(route10))) %>% 
+  mutate(route11 = (as.character(route11))) %>% 
+  pivot_longer(
+    route1:route11,
+    names_to = "routes_number_served",
+    values_to = "routes_name_served"
+    ) %>% 
+  mutate(routes_number_served = str_remove_all(routes_number_served, "route"))
 ```
+There are `r filter(transit_tidy_df, str_detect(routes_name_served, "A")) %>% distinct(line, station_name) %>% count()` stations that are distinct by their line and station name which serve the A train. Of these, only `r filter(ada == TRUE) %>% distinct(line, station_name) %>% count()` are ADA compliant.
+
 
 
 
