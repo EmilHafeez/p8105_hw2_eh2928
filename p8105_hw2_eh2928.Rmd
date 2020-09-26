@@ -79,6 +79,7 @@ Mr. Trash Wheel, amazingly, prevented `r trashwheel_df %>% filter(year == 2017) 
 Here, we focus on NYC Transit data relating to entrances and exits for each subway station in NYC. 
 
 Read and clean the data; retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Convert the entry variable from character (YES vs NO) to a logical variable.
+
 ```{r NYC Transit cleanings, warning = FALSE, message = FALSE, results = FALSE}
 transit_df =
   read_csv(
@@ -88,7 +89,18 @@ transit_df =
   mutate(entry = recode(entry, YES = TRUE, NO = FALSE)) %>% 
   mutate(vending = recode(vending, YES = TRUE, NO = FALSE)) 
 ```
+
+```{r how many stations ada compliant}
+  distinct(transit_df, line, station_name) %>% 
+  nrow() 
+  
+  select(ada) %>% 
+    mutate(ada = as.numeric(ada)) %>% 
+      distinct(transit_df, line, station_name) %>% 
+          count()
+```
+
+
 These data relate information on NYC subway lines, routes, and station characteristics. It has `r nrow(transit_df)` rows, and `r ncol(transit_df)` columns; they are a subset of the raw data. We've selected this subset of the raw data, as well as cleaned the variable names, and converted two variables to a logical variable (I took the liberty with "entry").
 
-Note that there are `r nrow(distinct(transit_df, line, station_name))` distinct stations (by line and station_name combination). Only `r of the `r nrow(distinct(transit_df, line, station_name))` distinct stations are ADA compliant. 
-
+Note that there are `r distinct(transit_df, line, station_name) %>% nrow()` distinct stations (by line and station_name combination). Only `r ` of the `r distinct(transit_df, line, station_name) %>% nrow()` distinct stations are ADA compliant. 
