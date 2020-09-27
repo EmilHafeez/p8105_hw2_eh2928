@@ -118,8 +118,50 @@ pols_month_df =
   relocate(month_name, before = month) %>% 
   select(-month) %>% 
   mutate(
-      prez_dem = recode(prez_dem, `1` = "dem", "0" = "gop")
+      prez_dem = recode(prez_dem, `1` = "dem", `0` = "gop")
       ) %>% 
   rename(president = prez_dem) %>% 
   select(-prez_gop, day)
+
+## can you edit the month_name variable to just be month???????? anD IN THE BELOW CODE
 ```
+Second, clean the data in snp.csv using a similar process to the above. For consistency across datasets, arrange according to year and month, and organize so that year and month are the leading columns.
+```{r snp.csv cleanings, warning = FALSE, message = FALSE}
+snp_df =
+  read_csv(
+      "./data/fivethirtyeight_datasets/snp.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(date, into = c("month", "day", "year")) %>% 
+  mutate(month = as.numeric(month)) 
+snp_df =
+  left_join(snp_df, month_helper_df, by = "month") %>% 
+  select(-month, -day) %>% 
+  rename(month = month_name) %>% 
+  relocate(month, after = year)
+##why isn't the location working well?####################################################################################################
+```
+Third, tidy the unemployment data so that it can be merged with the previous datasets. This process will involve switching from “wide” to “long” format; ensuring that key variables have the same name; and ensuring that key variables take the same values. 
+```{r tidy the unemployment data}
+unemployment_df =
+  read_csv(
+      "./data/fivethirtyeight_datasets/unemployment.csv") %>% 
+  janitor::clean_names() %>% 
+  pivot_longer(
+    jan:dec,
+    names_to = "month",
+    values_to = "unemployment_percentage"
+  ) %>% 
+  mutate(
+    month = recode(month, `jan` = "1", `feb` = "2", `mar` = "3", `apr` = "4", 
+                   `may` = "5", `jun` = "6", `jul` = "7", `aug` = "8", 
+                   `sep` = "9", `oct` = "10", `nov` = "11", `dec` = "12")
+        ) 
+
+%>% 
+  mutate(month = as.numeric(month)) %>% 
+  left_join(pols_month_df, month_helper_df, by = "month") %>% 
+  relocate(month_name, before = month) %>% 
+  select(-month)
+```
+
+
