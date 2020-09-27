@@ -101,6 +101,8 @@ transit_tidy_df =
     values_to = "routes_name_served"
     ) %>% 
   mutate(routes_number_served = str_remove_all(routes_number_served, "route"))
+
+################################################################################################################################################################ARE THESE MISSING DATA A MISTAKE? SHOULD I REMOVE THEM?
 ```
 There are `r filter(transit_tidy_df, str_detect(routes_name_served, "A")) %>% distinct(line, station_name) %>% count()` stations that are distinct by their line and station name which serve the A train. Of these, only `r filter(transit_tidy_df, ada == TRUE) %>% distinct(line, station_name) %>% count()` are ADA compliant.
 
@@ -176,5 +178,8 @@ Write a short paragraph about these datasets. Explain briefly what each dataset 
 
 These datasets are sourced from fivethirtyeight.com, founded by data-driven sports-analyst turned economist, political pundit, and still-sports-analyst Nate Silver. 
 
-Each dataset is organized by month and year. The "pols-month" dataset contains 10 variables that relate the number of Democratic and Republican politicians in power (seated in the governorship, House of Representatives, Senators, and presidency), and it contains `r nrow(pols_month_df)` rows, and `r ncol(pols_month_df)` columns. The "snp" dataset shows the S&P index at closing
+Each dataset is organized by month and year. The "pols-month" dataset contains 10 variables that relate the number of Democratic and Republican politicians in power (seated in  USA governorships, the House of Representatives, the Senate, and the presidency), and it contains `r nrow(pols_month_df)` rows, and `r ncol(pols_month_df)` columns. The "snp" dataset shows the S&P index at closing, with `r nrow(snp_df)` rows, and `r ncol(snp_df)` columns; the "unemployment" dataset shows the percentage of unemployment in the USA, with `r nrow(unemployment_df)` rows, and `r ncol(unemployment_df)` columns. 
 
+Each dataset is organized by month and year. The "pols-month" dataset contains 10 variables that relate the number of Democratic and Republican politicians in power (seated in  USA governorships, the House of Representatives, the Senate, and the presidency), and it contains `r nrow(pols_month_df)` rows, and `r ncol(pols_month_df)` columns. The "snp" dataset shows the S&P index at closing, with `r nrow(snp_df)` rows, and `r ncol(snp_df)` columns; the "unemployment" dataset shows the percentage of unemployment in the USA, with `r nrow(unemployment_df)` rows, and `r ncol(unemployment_df)` columns. 
+
+After combining these by the month and year, the resultant "fivethirtyeight" dataset has `r nrow(fivethirtyeight_df)` rows, and `r ncol(fivethirtyeight_df)` columns, covering `r range(pull(fivethirtyeight_df, year))` years. It has month and year variables, as well as the aforementioned national politicians, plus we have joined on the S&P value every month, and the unemployment rate (as a percentage). 
