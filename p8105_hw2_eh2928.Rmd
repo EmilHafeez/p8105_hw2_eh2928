@@ -121,9 +121,8 @@ pols_month_df =
       prez_dem = recode(prez_dem, `1` = "dem", `0` = "gop")
       ) %>% 
   rename(president = prez_dem) %>% 
+  rename(month = month_name) %>% 
   select(-prez_gop, day)
-
-## can you edit the month_name variable to just be month???????? anD IN THE BELOW CODE
 ```
 Second, clean the data in snp.csv using a similar process to the above. For consistency across datasets, arrange according to year and month, and organize so that year and month are the leading columns.
 ```{r snp.csv cleanings, warning = FALSE, message = FALSE}
@@ -161,12 +160,21 @@ unemployment_df =
 unemployment_df =
   left_join(unemployment_df, month_helper_df, by = "month") %>% 
   relocate(month_name, before = month) %>% 
-  select(-month)
+  select(-month) %>% 
+  rename(month = month_name)
 ```
 Join the datasets by merging snp into pols, and merging unemployment into the result.
 ```{r joining snp, pols, and unemployment}
 fivethirtyeight_df = 
-  left_join(pols_month_df, snp_df, by = "month")
+  left_join(pols_month_df, snp_df, by = c("month" = "month", "year" = "year")) %>% 
+    mutate(year = as.numeric(year)) 
+################################################################################CAN YOU POLISH THE LOCATION OF THE MUTATE LINE TO SOMEWHERE MORE FLUID?
+fivethirtyeight_df = 
+  left_join(fivethirtyeight_df, unemployment_df, by = c("month" = "month", "year" = "year"))
 ```
+Write a short paragraph about these datasets. Explain briefly what each dataset contained, and describe the resulting dataset (e.g. give the dimension, range of years, and names of key variables).
 
+These datasets are sourced from fivethirtyeight.com, founded by data-driven sports-analyst turned economist, political pundit, and still-sports-analyst Nate Silver. 
+
+Each dataset is organized by month and year. The "pols-month" dataset contains 10 variables that relate the number of Democratic and Republican politicians in power (seated in the governorship, House of Representatives, Senators, and presidency), and it contains `r nrow(pols_month_df)` rows, and `r ncol(pols_month_df)` columns. The "snp" dataset shows the S&P index at closing
 
