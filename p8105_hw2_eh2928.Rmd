@@ -11,8 +11,8 @@ library(readxl)
 ```
 
 # Problem One
-Here, we read in the data from the Mr. Trash Wheel sheet of an Excel document, to create a dataframe. 
 
+Here, we read in the data from the Mr. Trash Wheel sheet of an Excel document, to create a dataframe. 
 Mr. Trash Wheel is great! I met him when I lived in Baltimore in 2016 to 2018.
 
 We specify the data in the sheet, as well as clean the variable names, drop the rows without dumpster-specific data (which appear to be subtotals in the original sheet), and then round a variable to the nearest integer and store that variable respectively as an integer. That's it! In 10 lines! 
@@ -72,6 +72,7 @@ These data relate information on the date, type, volume, and counts of various t
 Mr. Trash Wheel, amazingly, prevented `r trashwheel_df %>% filter(year == 2017) %>% pull(weight_tons) %>% sum()` tons of trash from entering the Baltimore Inner Harbor in 2017 and `r trashwheel_df %>% filter(year == 2018) %>% pull(weight_tons) %>% sum()` tons in 2018. The median number of sports balls in a 2017 dumpster was `r trashwheel_df %>% filter(year == 2017) %>% pull(sports_balls) %>% median()`.
 
 # Problem Two
+
 Here, we focus on NYC Transit data relating to entrances and exits for each subway station in NYC. 
 
 Read and clean the data; retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Convert the entry variable from character (YES vs NO) to a logical variable.
@@ -90,7 +91,7 @@ These data are not tidy: the data could be represented more tidily by condensing
 
 Note that there are `r distinct(transit_df, line, station_name) %>% count()` distinct stations (by line and station_name combination). Only `r filter(transit_df, ada == TRUE) %>% distinct(line, station_name) %>% count()` of the `r distinct(transit_df, line, station_name) %>% nrow()` distinct stations are ADA compliant. Something that may (should?) also bother you is that only `r filter(transit_df, vending == FALSE) %>% filter(entry == TRUE) %>% count()` subway entrances without vending allow entry.
 
-Now, reformat data so that route number and route name are distinct variables. We first specify a dataframe to hold the tidied information, and make the different route columns into the same datatype, and then pivot them to a longer format. Lastly, we remove the phrase "route" from each of the cells in the new column, and then remove rows where the route data is missing.
+Next, we reformat data so that route number and route name are distinct variables. We first specify a dataframe to hold the tidied information, and make the different route columns into the same datatype, and then pivot them to a longer format. Lastly, we remove the phrase "route" from each of the cells in the new column, and then remove rows where the route data is missing.
 ```{r reformat and then calculate some specifics, result = FALSE}
 transit_tidy_df =
   transit_df %>% 
@@ -109,8 +110,9 @@ transit_tidy_df =
 There are `r filter(transit_tidy_df, str_detect(routes_name_served, "A")) %>% distinct(line, station_name) %>% count()` stations that are distinct by their line and station name which serve the A train. Of these, only `r filter(transit_tidy_df, ada == TRUE) %>% distinct(line, station_name) %>% count()` are ADA compliant.
 
 # Problem Three
+
 First, clean the data in the pols-month CSV. Use separate() to break up the variable "mon" into integer variables year, month, and day; replace month number with month name. Then, create a "president" variable taking values "gop" and "dem". Then, remove "prez_dem" and "prez_gop"; and remove the "day" variable.
-```{r clean pols-month}
+```{r clean pols-month, results = 'hide'}
 pols_month_df =
   read_csv(
       "./data/fivethirtyeight_datasets/pols-month.csv") %>% 
